@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace covid.Models
 {
-    public class Policy
+    public class Location
     {
-        public int PolicyId { get; set; }
-        public string PolicyName { get; set; }
+        public int LocationId { get; set; }
+        public string LocationName { get; set; }
     }
 }
