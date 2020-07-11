@@ -22,7 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
-serviceWorker.js
+src/serviceWorker.js
 apiKeys.json
-package-lock.json
+/package-lock.json
