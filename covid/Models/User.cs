@@ -13,4 +13,12 @@ namespace covid.Models
         public string Email { get; set; }
         public int UserTypeId { get; set; }
     }
+
+    public class AddUser
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string UserTypeName { get; set; }
+    }
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import firebase from 'firebase';
 import { Link } from 'react-router-dom'
 
 import auth from '../../../helpers/auth';
@@ -23,7 +22,7 @@ class Navbar extends React.Component {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item active">
-              <Link className="nav-link" to="/">Home <span class="sr-only">(current)</span></Link>
+              <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#Key">Key</a>

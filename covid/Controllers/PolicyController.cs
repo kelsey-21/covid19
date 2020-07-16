@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using covid.DataAccess;
+using covid.Models;
 
 namespace covid.Controllers
 {
@@ -19,5 +21,12 @@ namespace covid.Controllers
             _policyRepo = policyRepo;
         }
 
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult AddLocationPolicy(LocationPolicy policy)
+        {
+            return Ok("");
+        }
     }
 }

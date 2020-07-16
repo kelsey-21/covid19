@@ -18,11 +18,6 @@ import AddPolicy from '../components/pages/AddPolicy/AddPolicy';
 
 import './App.scss';
 
-const PublicRoute = ({ component: Component, authed, ...rest }) => {
-  const routeChecker = (props) => (authed === false ? <Component {...props} {...rest}/> : <Redirect to={{ pathname: '/', state: { from: props.location } }} />);
-  return <Route {...rest} render={(props) => routeChecker(props)} />;
-};
-
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   const routeChecker = (props) => (authed === true ? <Component {...props} {...rest}/> : <Redirect to={{ pathname: '/', state: { from: props.location } }} />);
   return <Route {...rest} render={(props) => routeChecker(props)} />;
@@ -35,31 +30,31 @@ class App extends React.Component {
     authed: false,
   }
 
-  componentDidMount() {
-    this.removeListener = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ authed: true });
-      } else {
-        this.setState({ authed: false });
-      }
-    });
-  };
+  // componentDidMount() {
+  //   this.removeListener = firebase.auth().onAuthStateChanged((user) => {
+  //     if (user && this.state.authed === false) {
+  //       this.setState({ authed: true });
+  //     } else if (user) {
+  //       this.setState({ authed: false });
+  //     }
+  //   });
+  // };
 
   render() {
     const { authed } = this.state;
     return (
       <div className="App">
         <Router>
-          <Navbar handleAuth={this.handleAuthChange} authed={authed}/>
+          <Navbar authed={authed}/>
           <Switch>
-            <PublicRoute path="/" exact component={Map} authed={authed} />
-            <PublicRoute path="/login" exact component={Login} authed={authed} handleAuth={this.handleAuthChange} />
-            <PublicRoute path="/register" exact component={Register} authed={authed} />
-            <PublicRoute path="/location/:locationId" exact component={State} authed={authed} />
+            <Route path="/" exact component={Map} authed={authed} />
+            <Route path="/login" exact component={Login} authed={authed} />
+            <Route path="/register" exact component={Register} authed={authed} />
+            <Route path="/location/:locationId" exact component={State} authed={authed} />
             <PrivateRoute path="/{userId}/submitpolicy" exact component={AddPolicy} authed={authed} />
           </Switch>
           <Footer />
-          </Router>
+        </Router>
       </div>
     );
   }

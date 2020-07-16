@@ -18,11 +18,11 @@ axios.interceptors.request.use(function (request) {
 const registerUser = (user) => {
   return firebase.auth().createUserWithEmailAndPassword(user.email, user.password).then(cred => {
 
-    let userInfo = {email: cred.user.email};
+    //let userInfo = {email: cred.user.email};
 
     cred.user.getIdToken()
       .then((token) => sessionStorage.setItem('token', token))
-      .then(() => axios.post(`${baseUrl}/user/adduser`, userInfo));
+      .then(() => axios.post(`${baseUrl}/user/adduser`, user));
   });
 };
 
@@ -38,7 +38,7 @@ const logoutUser = () => {
 };
 
 const getUserId = () => {
-  return firebase.auth().currentUser.uid;
+  return 1;
 };
 
 export default {
