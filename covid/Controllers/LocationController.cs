@@ -21,5 +21,11 @@ namespace covid.Controllers
             _locationRepo = locationRepo;
         }
 
+        [HttpGet("list")]
+        public IActionResult GetListOfLocations()
+        {
+            var locations = _locationRepo.GetListOfLocations();
+            return Ok(locations);
+        }
     }
 }
