@@ -47,7 +47,8 @@ namespace covid.Controllers
         [HttpGet("historical/{StateCode}")]
         public IActionResult HistoricaValuesByState(string StateCode)
         {
-            var restRequest = new RestRequest("v1/states/{StateCode}/daily.json", Method.GET);
+            var sc = StateCode.ToLower();
+            var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
             var response = _restClient.Execute<List<StateData>>(restRequest);
 
             if (response.IsSuccessful)
@@ -91,7 +92,6 @@ namespace covid.Controllers
             if (response.IsSuccessful)
                 return Ok(locationColor);
             else return NotFound(response.ErrorMessage);
-
         }
     }
 }
