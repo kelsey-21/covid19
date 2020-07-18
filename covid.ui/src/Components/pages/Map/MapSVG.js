@@ -1,12 +1,13 @@
 import * as React from "react";
+import PropTypes from 'prop-types';
 
 function SvgComponent(props) {
   return (
-    <svg {...props}>
+    <svg width={props.size * 1.6} height={props.size} viewBox="250 0 1000 800" {...props}>
       <defs>
         <style>
           {
-            ".prefix__land{fill:#ccc;fill-opacity:1;stroke:#fff;stroke-opacity:1;stroke-width:.5}"
+            ".prefix__land{fill:#D3D3D3;fill-opacity:1;stroke:#fff;stroke-opacity:1;stroke-width:.5}"
           }
         </style>
       </defs>
@@ -265,9 +266,29 @@ function SvgComponent(props) {
         className="prefix__land"
         d="M634.51 198.52l-.47 5.55-.48 5.55-.48 5.55-.47 5.55-.48 5.54-.47 5.55-.48 5.54-.48 5.55-5.27-.48-5.26-.49-5.27-.52-5.27-.53-5.26-.54-5.26-.57-5.26-.59-5.26-.6-5.26-.62-5.25-.64-5.25-.66-5.25-.67-5.25-.7-5.24-.71-5.24-.73-5.24-.75-4.18-.61-4.17-.62-4.17-.63-4.17-.64-4.17-.66-4.17-.67-4.17-.68-4.16-.69.46-2.74.46-2.74.46-2.75.45-2.74.46-2.74.46-2.75.46-2.74.45-2.74.58-3.44.57-3.42.57-3.43.57-3.44.57-3.43.58-3.43.57-3.43.57-3.43.58-3.44.57-3.44.57-3.43.58-3.44.57-3.44.57-3.43.58-3.44.57-3.44.46-2.77.47-2.77.47-2.77.46-2.77 3.43.57 3.43.56 3.44.56 3.43.54 3.44.54 3.44.52 3.44.52 3.44.52 3.44.5 3.44.49 3.45.49 3.44.48 3.45.47 3.45.46 3.44.45 3.45.45 3.45.43 3.46.43 3.45.42 3.45.41 3.46.41 3.46.39 3.45.39 3.46.38 3.46.36 3.46.37 3.46.35 3.46.34 3.46.34 3.46.33 3.47.32 3.46.31-.47 5.57-.48 5.57-.48 5.56-.48 5.56-.47 5.56-.48 5.56-.47 5.55z"
       />
+    <animateTransform begin="1s" values="-150,-150; 0,0" dur="0.5s"
+        type="translate"
+        attributeName="transform"
+        fill="freeze"
+        additive="sum"/>
+
+    <animateTransform begin="1s" values="2; 1" dur="0.5s"
+        type="scale"
+        attributeName="transform"
+        fill="freeze" additive="sum"/>
     </svg>
   );
 }
+
+SvgComponent.propTypes = {
+  color: PropTypes.string,
+  size: PropTypes.number
+};
+
+SvgComponent.defaultProps = {
+  color: "#D3D3D3",
+  size: '500'
+};
 
 export default SvgComponent;
 
