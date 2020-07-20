@@ -16,11 +16,14 @@ namespace covid.Controllers
     public class CovidController : ControllerBase
     {
         RestClient _restClient;
+        LocationRepository _locationRepo;
 
-        public CovidController()
+        public CovidController(LocationRepository locationRepo)
         {
             _restClient = new RestClient("https://covidtracking.com/api/");
+            _locationRepo = locationRepo;
         }
+
 
         //[HttpGet]
         //public IActionResult TestRestSharp()
@@ -56,8 +59,8 @@ namespace covid.Controllers
             else return NotFound(response.ErrorMessage);
         }
 
-        [HttpGet("status/{StateCode}")]
-        public IActionResult StatusByState(string StateCode)
+        //[HttpGet("status/{StateCode}")]
+        public LocationStatus StatusByState(string StateCode)
         {
             var sc = StateCode.ToLower();
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
@@ -68,9 +71,9 @@ namespace covid.Controllers
             var last14Records = response.Data.Take(14).ToList();
 
             //foreach (var stateData in last14Records)
-                var latestRecord = last14Records[13];
-                var firstRecord = last14Records[0];
-                var percentChange = ((latestRecord.Positive - firstRecord.Positive) * 100) / firstRecord.Positive;
+            var latestRecord = last14Records[13];
+            var firstRecord = last14Records[0];
+            var percentChange = ((firstRecord.Positive - latestRecord.Positive) * 100) / firstRecord.Positive;
             string status;
 
             if (percentChange >= 25)
@@ -84,14 +87,37 @@ namespace covid.Controllers
 
                 var locationColor = new LocationStatus
                 {
-                    Location = latestRecord.State,
-                    Status = status,
-                    PercentChange = percentChange,
+                    Id = StateCode,
+                    Name = latestRecord.State,
+                    Value = new Value {
+                        Status = status,
+                        PercentChange = percentChange,
+                    }
                 };
 
-            if (response.IsSuccessful)
-                return Ok(locationColor);
-            else return NotFound(response.ErrorMessage);
+            return locationColor;
+
+            //if (response.IsSuccessful)
+            //    return Ok(locationColor);
+            //else return NotFound(response.ErrorMessage);
+        }
+
+        [HttpGet("map")]
+        public IActionResult GetAllMapData()
+        {
+            var locations = _locationRepo.GetListOfLocations();
+
+            var allMapData = new List<LocationStatus>();
+
+            foreach (var location in locations)
+            {
+                var mapData = StatusByState(location.LocationCode);
+                allMapData.Add(mapData);
+            }
+
+            if (allMapData.Count > 0)
+                return Ok(allMapData);
+            else return NotFound("Issue with map data");
         }
     }
 }

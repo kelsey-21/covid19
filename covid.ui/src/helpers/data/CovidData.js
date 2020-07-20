@@ -13,6 +13,12 @@ const getStatusByState = (state) => new Promise((resolve, reject) => {
     .catch(error => reject(error))
 });
 
+const getMapData = () => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/api/covid/map`)
+    .then((result) => resolve(result.data))
+    .catch(error => reject(error))
+});
+
 export default {
-  getAllCovidData, getStatusByState
+  getAllCovidData, getStatusByState, getMapData
 };

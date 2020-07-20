@@ -27,5 +27,6 @@ namespace covid.DataAccess
                 return locations;
             }
         }
+
     }
 }

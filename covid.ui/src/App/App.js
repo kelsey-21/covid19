@@ -10,7 +10,7 @@ import {
 
 import Navbar from '../components/shared/Navbar/Navbar';
 import Footer from '../components/shared/Footer/Footer';
-import Map from '../components/pages/Map/MapSVG';
+import Map from '../components/pages/Map/Map';
 import State from '../components/pages/State/State';
 import Login from '../components/pages/Login/Login';
 import Register from '../components/pages/Register/Register';
