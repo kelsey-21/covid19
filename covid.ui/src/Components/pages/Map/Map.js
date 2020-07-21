@@ -27,38 +27,56 @@ class Map extends React.Component {
 
     let polygonTemplate = polygonSeries.mapPolygons.template;
     polygonTemplate.tooltipText = "{name}";
-    polygonTemplate.fill = am4core.color("#74B266");
+    polygonTemplate.fill = am4core.color("#AFAFAF");
 
     // Create hover state and set alternative fill color
     let hs = polygonTemplate.states.create("hover");
-    hs.properties.fill = am4core.color("#367B25");
+    hs.properties.fill = am4core.color("#4A4A4A");
 
-    // const stateData = this.state.data;
-    // if (stateData !== null )
-    // {
-    //   polygonSeries.data = stateData;
-    //   polygonTemplate.tooltipText = "{name}: {value}";
-    // }
-
-    map.current = map;
+    this.polygonSeries = polygonSeries;
+    this.polygonTemplate = polygonTemplate;
+    this.map = map;
+    this.hs = hs;
 
     return () => {
       map.dispose();
     };
   }
 
-  // componentDidUpdate(prevState) {
-  //   // Typical usage (don't forget to compare props):
-  //   if (this.state.mapdata !== prevState.mapdata) {
-  //     this.polygonSeries.data = this.state.mapData;
-  //     this.polygonTemplate.tooltipText = "{name}: {value}";
-  //   }
-  // }
+  componentDidUpdate(prevState) {
+    // // Typical usage (don't forget to compare props):
+    if (this.state.mapdata !== prevState.mapdata) {
+      this.polygonSeries.data = this.state.mapdata;
+      this.polygonTemplate.tooltipText = "[bold]{name}[/]: Cases are [underline]{value.status}[/] at a rate of {value.percentChange}%";
+
+      this.polygonTemplate.propertyFields.fill = "fill";
+
+      // const { mapdata } = this.state;
+      // mapdata.forEach(mapd => {
+      //   if (mapd.values.status === 'greatly increasing')
+      //   {
+      //     this.hs.properties.fill = am4core.color("#7F1802");
+      //     debugger;
+      //     // mapdata.values.fill = am4core.color("#7F1802");
+      //   } else if (mapd.values.status === 'increasing')
+      //   {
+      //     this.hs.properties.fill = am4core.color("#D82904");
+      //     // mapdata.values.fill = am4core.color("#D82904");
+      //   } else if (mapd.values.status === 'flat')
+      //   {
+      //     this.hs.properties.fill = am4core.color("#D9DB22");
+      //     // mapdata.values.fill = am4core.color("#D9DB22");
+      //   } else if (mapd.values.status === 'decreasing')
+      //   {
+      //     this.hs.properties.fill = am4core.color("#009315");
+      //     // mapdata.values.fill = am4core.color("#009315");
+      //   }
+    }
+  }
 
   GetMapData = () => {
     CovidData.getMapData()
       .then(mapdata => {
-        console.log(mapdata);
         if (mapdata !== undefined) {
           this.setState({ mapdata: mapdata });
         }

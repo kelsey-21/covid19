@@ -18,12 +18,12 @@ namespace covid.DataAccess
             ConnectionString = config.GetConnectionString("CovidTracking");
         }
 
-        public List<LocationName> GetListOfLocations()
+        public List<LocationNameandCode> GetListOfLocations()
         {
-            var sql = "select LocationCode from Location";
+            var sql = "select LocationCode, LocationName from Location";
             using (var db = new SqlConnection(ConnectionString))
             {
-                var locations = db.Query<LocationName>(sql).ToList();
+                var locations = db.Query<LocationNameandCode>(sql).ToList();
                 return locations;
             }
         }

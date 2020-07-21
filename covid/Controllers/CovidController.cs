@@ -60,7 +60,7 @@ namespace covid.Controllers
         }
 
         //[HttpGet("status/{StateCode}")]
-        public LocationStatus StatusByState(string StateCode)
+        public LocationStatus StatusByState(string StateCode, string StateName)
         {
             var sc = StateCode.ToLower();
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
@@ -71,28 +71,43 @@ namespace covid.Controllers
             var last14Records = response.Data.Take(14).ToList();
 
             //foreach (var stateData in last14Records)
-            var latestRecord = last14Records[13];
-            var firstRecord = last14Records[0];
-            var percentChange = ((firstRecord.Positive - latestRecord.Positive) * 100) / firstRecord.Positive;
+            var oldestRecord = last14Records[13];
+            var newestRecord = last14Records[0];
+            var percentChange = ((newestRecord.Positive - oldestRecord.Positive) * 100) / oldestRecord.Positive;
             string status;
+            string fill;
 
             if (percentChange >= 25)
-                    status = "greatly increasing";
+            {
+                status = "greatly increasing";
+                fill = "#8B0000";
+            }
                 else if (percentChange < 25 && percentChange >= 5)
-                    status = "increasing";
+            {
+                status = "increasing";
+                fill = "#DC143C";
+            }
                 else if (percentChange < 5 && percentChange >= 0)
-                    status = "flat";
-                else
-                    status = "decreasing";
+            {
+                status = "flat";
+                fill = "#FFD700";
 
-                var locationColor = new LocationStatus
-                {
-                    Id = StateCode,
-                    Name = latestRecord.State,
-                    Value = new Value {
-                        Status = status,
-                        PercentChange = percentChange,
-                    }
+            }
+                else
+            {
+                status = "decreasing";
+                fill = "#008000";
+            }
+
+            var locationColor = new LocationStatus
+            {
+                Id = "US-" + StateCode,
+                Name = StateName,
+                Value = new Value {
+                    Status = status,
+                    PercentChange = percentChange,
+                },
+                Fill = fill,
                 };
 
             return locationColor;
@@ -111,7 +126,7 @@ namespace covid.Controllers
 
             foreach (var location in locations)
             {
-                var mapData = StatusByState(location.LocationCode);
+                var mapData = StatusByState(location.LocationCode, location.LocationName);
                 allMapData.Add(mapData);
             }
 

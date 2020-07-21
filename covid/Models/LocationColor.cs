@@ -19,6 +19,7 @@ namespace covid.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public Value Value { get; set; }
+        public string Fill { get; set; }
     }
 
     public class Value
