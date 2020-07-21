@@ -13,4 +13,18 @@ namespace covid.Models
         public DateTime Date { get; set; }
         public string Status { get; set; }
     }
+
+    public class LocationStatus
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public Value Value { get; set; }
+        public string Fill { get; set; }
+    }
+
+    public class Value
+    {
+        public string Status { get; set; }
+        public decimal PercentChange { get; set; }
+    }
 }
