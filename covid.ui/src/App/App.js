@@ -50,7 +50,7 @@ class App extends React.Component {
             <Route path="/" exact component={Map} authed={authed} />
             <Route path="/login" exact component={Login} authed={authed} />
             <Route path="/register" exact component={Register} authed={authed} />
-            <Route path="/location/:locationId" exact component={State} authed={authed} />
+            <Route path="/location/:locationCode" exact component={State} authed={authed} />
             <PrivateRoute path="/{userId}/submitpolicy" exact component={AddPolicy} authed={authed} />
           </Switch>
           <Footer />

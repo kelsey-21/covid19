@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using covid.Models;
 
 namespace covid.Models
 {
@@ -15,5 +16,17 @@ namespace covid.Models
         public DateTime DateExpires { get; set; }
         public DateTime DateEased { get; set; } 
         public string LocPolicyNotes { get; set; }
+    }
+
+    public class LocationPolicyFormatted
+    {
+        public DateTime Date { get; set; }
+        public string PolicyCode { get; set; }
+    }
+
+    public class HistoricalData
+    {
+        public List<StateDataPositive> Covid { get; set; }
+        public List<LocationPolicyFormatted> Policy { get; set; }
     }
 }
