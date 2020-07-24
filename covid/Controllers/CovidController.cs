@@ -56,20 +56,21 @@ namespace covid.Controllers
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
             var covidResponse = _restClient.Execute<List<StateDataPositive>>(restRequest);
             var locationPolicy = _locationPolicyRepository.GetLocationPoliciesByState(StateCode);
-            
-            //covidResponse.Data.ForEach(x)
-            //    return new RestructuredCovidResponse
-            //    {
-            //        state = x.state,
-            //        "x.date" = x.positive                }
 
+            var covidData = new List<StateDataPositive>();
 
-            //public Test 
-
+            foreach (var covid in covidResponse.Data)
+            {
+                var Year = covid.Date.Substring(0, 4);
+                var Month = covid.Date.Substring(4, 2);
+                var Day = covid.Date.Substring(6, 2);
+                var myDate = String.Format("{0}-{1}-{2}", Year, Month, Day);
+                covidData.Add(new StateDataPositive() { Date = myDate, Positive = covid.Positive });
+            }
 
             var historicaldata = new HistoricalData
             {
-                Covid = covidResponse.Data,
+                Covid = covidData,
                 Policy = locationPolicy,
             };
 

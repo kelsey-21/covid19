@@ -4,72 +4,120 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 
 import CovidData from '../../../helpers/data/CovidData';
 
+
 class State extends React.Component {
   state = {
-    statedata: []
+    coviddata: [],
+    policydata: [],
   }
 
   componentDidMount() {
     this.GetStateData()
-
-    let chart = am4core.create("chartdiv", am4charts.XYChart);
-    let xAxis = chart.xAxes.push(new am4charts.DateAxis());
-    let yAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    let secondyAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-    secondyAxis.dataFields.category = "PolicyCode";
-
-    xAxis.dateFormatter = new am4core.DateFormatter();
-    xAxis.dateFormatter.dateFormat = "MM-dd";
-
-    chart.dateFormatter.numberFormat = "#,### a"
-
-    // Axis titles
-    xAxis.title.text = "Time (in days)";
-    yAxis.title.text = "Positive COVID cases and Policies";
-    secondyAxis.title.text = "??";
-
-    this.chart = chart;
-
-
-    return () => {
-      chart.dispose();
-    };
   }
 
   GetStateData = () => {
     // console.log('option 1', this.props.match.params.locationCode);
     const { locationCode } = this.props.match.params;
     CovidData.getStateData(locationCode)
-    .then(statedata => {
-      if (statedata !== undefined) {
-        this.setState({ statedata: statedata });
+    .then(data => {
+      if (data !== undefined) {
+        this.setState({ coviddata: data.covid, policydata: data.policy });
+        this.CreateChart()
       }
     });
   };
 
   componentDidUpdate(prevState) {
     if (this.state.statedata !== prevState.statedata) {
-      const { statedata } = this.state;
-          // series
-    let series1 = this.chart.series.push(new am4charts.LineSeries());
-    series1.name = "Covid";
-    series1.stroke = am4core.color("#CDA2AB");
-    series1.strokeWidth = 3;
-    series1.dataFields.valueY = "positive";
-    series1.dataFields.categoryX = "date";
-
-    let series2 = this.chart.series.push(new am4charts.LineSeries());
-    series2.name = "Policy";
-    series2.stroke = am4core.color("#444");
-    series2.strokeWidth = 3;
-    series2.dataFields.valueY = "PolicyCode";
-    series2.dataFields.categoryX = "Date";
-
-    series1.data = statedata.covid;
-    series2.data = statedata.policy;
+      const { policydata, coviddata } = this.state;
+      this.chart.data = coviddata;
     }
   }
 
+  CreateChart() {
+
+    let chart = am4core.create("chartdiv", am4charts.XYChart);
+      if (this.state.coviddata) {
+        chart.data = this.state.coviddata;
+      }
+
+    // chart.data = [
+    //   {
+    //       "date": "2020-07-23",
+    //       "positive": 501
+    //     },
+    //     {
+    //       "date": "2020-07-22",
+    //       "positive": 301
+    //     },
+    // ];
+
+        // series2.data = [
+    //   {
+    //       "date": "2020-07-23",
+    //       "policy": "test"
+    //     },
+    //     {
+    //       "date": "2020-07-22",
+    //       "policy": "test2"
+    //     },
+    // ];
+
+    chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
+
+    // Create axes
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+    // Create series
+    var series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "positive";
+    series.dataFields.dateX = "date";
+    series.tooltipText = "{value}"
+    series.strokeWidth = 2;
+    series.minBulletDistance = 5;
+
+    // Drop-shaped tooltips
+    series.tooltip.background.cornerRadius = 20;
+    series.tooltip.background.strokeOpacity = 0;
+    series.tooltip.pointerOrientation = "vertical";
+    series.tooltip.label.minWidth = 40;
+    series.tooltip.label.minHeight = 40;
+    series.tooltip.label.textAlign = "middle";
+    series.tooltip.label.textValign = "middle";
+
+    // Make bullets grow on hover
+    var bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.circle.strokeWidth = 2;
+    bullet.circle.radius = 4;
+    bullet.circle.fill = am4core.color("#fff");
+
+    var bullethover = bullet.states.create("hover");
+    bullethover.properties.scale = 1.3;
+
+    // Make a panning cursor
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.behavior = "panXY";
+    chart.cursor.xAxis = dateAxis;
+    chart.cursor.snapToSeries = series;
+
+    // Create vertical scrollbar and place it before the value axis
+    chart.scrollbarY = new am4core.Scrollbar();
+    chart.scrollbarY.parent = chart.leftAxesContainer;
+    chart.scrollbarY.toBack();
+
+    // Create a horizontal scrollbar with previe and place it underneath the date axis
+    chart.scrollbarX = new am4charts.XYChartScrollbar();
+    chart.scrollbarX.series.push(series);
+    chart.scrollbarX.parent = chart.bottomAxesContainer;
+
+    dateAxis.start = 0.79;
+    dateAxis.keepSelection = true;
+
+    return () => {
+      chart.dispose();
+    };
+  }
 
   render() {
 

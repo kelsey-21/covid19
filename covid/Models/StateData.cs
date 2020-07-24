@@ -52,7 +52,7 @@ namespace covid.Models
 
     public class StateDataPositive
     {
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public int Positive { get; set; }
     }
 }
