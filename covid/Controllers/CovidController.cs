@@ -17,11 +17,13 @@ namespace covid.Controllers
     {
         RestClient _restClient;
         LocationRepository _locationRepo;
+        LocationPolicyRepository _locationPolicyRepository;
 
-        public CovidController(LocationRepository locationRepo)
+        public CovidController(LocationRepository locationRepo, LocationPolicyRepository locationPolicyRepo)
         {
             _restClient = new RestClient("https://covidtracking.com/api/");
             _locationRepo = locationRepo;
+            _locationPolicyRepository = locationPolicyRepo;
         }
 
 
@@ -47,16 +49,36 @@ namespace covid.Controllers
             else return NotFound(response.ErrorMessage);
         }
 
-        [HttpGet("historical/{StateCode}")]
-        public IActionResult HistoricaValuesByState(string StateCode)
+        [HttpGet("historicalpositive/{StateCode}")]
+        public IActionResult HistoricalPositiveValuesByState(string StateCode)
         {
             var sc = StateCode.ToLower();
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
-            var response = _restClient.Execute<List<StateData>>(restRequest);
+            var covidResponse = _restClient.Execute<List<StateDataPositive>>(restRequest);
+            var locationPolicy = _locationPolicyRepository.GetLocationPoliciesByState(StateCode);
 
-            if (response.IsSuccessful)
-                return Ok(response.Data);
-            else return NotFound(response.ErrorMessage);
+            var covidData = new List<StateDataPositive>();
+
+            foreach (var covid in covidResponse.Data)
+            {
+                var Year = covid.Date.Substring(0, 4);
+                var Month = covid.Date.Substring(4, 2);
+                var Day = covid.Date.Substring(6, 2);
+                var myDate = String.Format("{0}-{1}-{2}", Year, Month, Day);
+                covidData.Add(new StateDataPositive() { Date = myDate, Positive = covid.Positive });
+            }
+
+            var historicaldata = new HistoricalData
+            {
+                Covid = covidData,
+                Policy = locationPolicy,
+            };
+
+            return Ok(historicaldata);
+
+            //if (response.IsSuccessful)
+            //    return Ok(response.Data);
+            //else return NotFound(response.ErrorMessage);
         }
 
         //[HttpGet("status/{StateCode}")]

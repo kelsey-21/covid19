@@ -48,6 +48,11 @@ namespace covid.Models
         public int PositiveScore { get; set; }
         public int Score { get; set; }
         public string Grade { get; set; }
+    }
 
+    public class StateDataPositive
+    {
+        public string Date { get; set; }
+        public int Positive { get; set; }
     }
 }

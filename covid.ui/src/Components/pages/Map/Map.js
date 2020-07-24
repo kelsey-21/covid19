@@ -1,11 +1,11 @@
 import React from 'react';
+import { Redirect, NavLink } from 'react-router-dom';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_usaLow from "@amcharts/amcharts4-geodata/usaLow";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 import CovidData from '../../../helpers/data/CovidData';
-import { CardBody } from 'reactstrap';
 
 am4core.useTheme(am4themes_animated);
 
@@ -13,6 +13,26 @@ class Map extends React.Component {
   state = {
     mapdata: [],
   }
+
+  clickEvents = (e) => {
+    // zoom to an object
+    // e.target.series.chart.zoomToMapObject(e.target);
+
+    // get object info
+    var id = e.target.dataItem.dataContext.id;
+    var locationCode = id.split('-')[1];
+
+    // this.reroute(locationCode);
+    // this.reroute2(locationCode);
+    this.reroute3(locationCode);
+
+    // browserHistory.push(`/location/${locationCode}`);
+  };
+
+  reroute = locationCode => <Redirect to= { `/location/${locationCode}` } />;
+  reroute2 = locationCode => <NavLink to={ `/location/${locationCode}` } ></NavLink>;
+  reroute3 = locationCode => this.props.history.push({ pathname: `/location/${locationCode}`, props: locationCode });;
+
 
   componentDidMount() {
     // initiates map
@@ -38,18 +58,16 @@ class Map extends React.Component {
     let hs = polygonTemplate.states.create("hover");
     hs.properties.fill = am4core.color("#4A4A4A");
 
-    polygonTemplate.events.on("hit", function(ev) {
-      // zoom to an object
-      ev.target.series.chart.zoomToMapObject(ev.target);
+    // click event
+    polygonTemplate.events.on("hit", this.clickEvents, this);
 
-      // get object info
-      console.log(ev.target.dataItem.dataContext.name);
-    });
+    map.zoomControl = new am4maps.ZoomControl();
 
     this.polygonSeries = polygonSeries;
     this.polygonTemplate = polygonTemplate;
     this.map = map;
     this.hs = hs;
+
 
     return () => {
       map.dispose();
@@ -60,7 +78,7 @@ class Map extends React.Component {
     if (this.state.mapdata !== prevState.mapdata) {
       // merges map data to information in state and updates tooltips
       this.polygonSeries.data = this.state.mapdata;
-      this.polygonTemplate.tooltipText = "[bold]{name}[/]: Cases are [underline]{value.status}[/] at a rate of {value.percentChange}%";
+      this.polygonTemplate.tooltipText = "[bold]{name}[/]: Cases are {value.status} at a rate of {value.percentChange}%";
 
       // updates map colors
       this.polygonTemplate.propertyFields.fill = "fill";
@@ -69,18 +87,21 @@ class Map extends React.Component {
 
   GetMapData = () => {
     CovidData.getMapData()
-      .then(mapdata => {
-        if (mapdata !== undefined) {
-          this.setState({ mapdata: mapdata });
-        }
-      });
+    .then(mapdata => {
+      if (mapdata !== undefined) {
+        this.setState({ mapdata: mapdata });
+      }
+    });
   };
 
   render() {
     return(
-      <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>
-    )
+      <div className="Map">
+        <h3>COVID19 and Policy Tracking</h3>
+        <div id="chartdiv" style={{ width: "90%", height: "450px" }}></div>
+      </div>
+      )
+    }
   }
-}
 
-export default Map;
+  export default Map;
