@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,6 +60,7 @@ namespace covid.Controllers
             var locationPolicy = _locationPolicyRepository.GetLocationPoliciesByState(StateCode);
 
             var covidData = new List<StateDataPositive>();
+            var historicalData = new List<DataModel>();
 
             foreach (var covid in covidResponse.Data)
             {
@@ -65,21 +68,32 @@ namespace covid.Controllers
                 var Month = covid.Date.Substring(4, 2);
                 var Day = covid.Date.Substring(6, 2);
                 var myDate = String.Format("{0}-{1}-{2}", Year, Month, Day);
-                covidData.Add(new StateDataPositive() { Date = myDate, Positive = covid.Positive });
+                covidData.Add(new StateDataPositive() { Date = myDate, PositiveIncrease = covid.PositiveIncrease });
             }
 
-            var historicaldata = new HistoricalData
+
+            foreach (var covid in covidData)
             {
-                Covid = covidData,
-                Policy = locationPolicy,
-            };
+                var policyCode = locationPolicy.FirstOrDefault(item => item.Date == covid.Date);
+                var finalData = new DataModel
+                {
+                    Date = covid.Date,
+                    PositiveIncrease = covid.PositiveIncrease,
+                };
+                if (policyCode != null)
+                {
+                    finalData.Policy = policyCode.PolicyCode;
+                } else
+                {
+                    finalData.Policy = null;
+                }
+                historicalData.Add(finalData);
 
-            return Ok(historicaldata);
+            }
 
-            //if (response.IsSuccessful)
-            //    return Ok(response.Data);
-            //else return NotFound(response.ErrorMessage);
+            return Ok(historicalData);
         }
+  
 
         //[HttpGet("status/{StateCode}")]
         public LocationStatus StatusByState(string StateCode, string StateName)
