@@ -18,7 +18,7 @@ namespace covid.DataAccess
         }
         public List<LocationPolicyFormatted> GetLocationPoliciesByState(string locationCode)
         {
-            var sql = @"select lp.DateIssued as Date, p.PolicyCode
+            var sql = @"select CONVERT(varchar, lp.DateIssued, 23) as Date, p.PolicyCode
                         from LocationPolicy as lp
                         join location as l on lp.LocationId = l.LocationId
                         join policy as p on lp.PolicyId = p.PolicyId

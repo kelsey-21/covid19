@@ -20,7 +20,7 @@ namespace covid.Models
 
     public class LocationPolicyFormatted
     {
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public string PolicyCode { get; set; }
     }
 
@@ -28,5 +28,12 @@ namespace covid.Models
     {
         public List<StateDataPositive> Covid { get; set; }
         public List<LocationPolicyFormatted> Policy { get; set; }
+    }
+
+    public class DataModel
+    {
+        public string Date { get; set; }
+        public int PositiveIncrease { get; set; }
+        public string? Policy { get; set; }
     }
 }

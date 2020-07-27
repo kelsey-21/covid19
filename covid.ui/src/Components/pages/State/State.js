@@ -1,9 +1,13 @@
 import React from 'react';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
 
 import CovidData from '../../../helpers/data/CovidData';
 
+am4core.useTheme(am4themes_dataviz);
+am4core.useTheme(am4themes_animated);
 
 class State extends React.Component {
   state = {
@@ -21,61 +25,51 @@ class State extends React.Component {
     CovidData.getStateData(locationCode)
     .then(data => {
       if (data !== undefined) {
-        this.setState({ coviddata: data.covid, policydata: data.policy });
-        this.CreateChart()
+        this.setState({ coviddata: data });
+        this.CreateChart();
       }
     });
   };
 
-  componentDidUpdate(prevState) {
-    if (this.state.statedata !== prevState.statedata) {
-      const { policydata, coviddata } = this.state;
-      this.chart.data = coviddata;
-    }
-  }
+  // componentDidUpdate(prevState) {
+  //   if (this.state.statedata !== prevState.statedata) {
+  //     const { coviddata } = this.state;
+  //     // this.chart.data = coviddata.filter(x => x.positiveIncrease !== 0);
+  //     this.chart.data = [1,2,3];
+  //   }
+  // }
 
   CreateChart() {
-
     let chart = am4core.create("chartdiv", am4charts.XYChart);
       if (this.state.coviddata) {
-        chart.data = this.state.coviddata;
+        chart.data = this.state.coviddata.filter(x => x.positiveIncrease !== 0).reverse();
       }
 
-    // chart.data = [
-    //   {
-    //       "date": "2020-07-23",
-    //       "positive": 501
-    //     },
-    //     {
-    //       "date": "2020-07-22",
-    //       "positive": 301
-    //     },
-    // ];
-
-        // series2.data = [
-    //   {
-    //       "date": "2020-07-23",
-    //       "policy": "test"
-    //     },
-    //     {
-    //       "date": "2020-07-22",
-    //       "policy": "test2"
-    //     },
-    // ];
-
+    // Set input format for the dates
     chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
 
     // Create axes
-    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis2.renderer.inversed = true;
+    valueAxis2.syncWithAxis = valueAxis;
+    valueAxis.syncWithAxis = valueAxis2;
 
     // Create series
-    var series = chart.series.push(new am4charts.LineSeries());
-    series.dataFields.valueY = "positive";
+    let series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "positiveIncrease";
     series.dataFields.dateX = "date";
-    series.tooltipText = "{value}"
+    series.tooltipText = "{positiveIncrease}+"
     series.strokeWidth = 2;
-    series.minBulletDistance = 5;
+    series.minBulletDistance = 12;
+
+    let series2 = chart.series.push(new am4charts.LineSeries());
+    series2.dataFields.valueY = "policy";
+    series2.dataFields.dateX = "date";
+    series2.tooltipText = "{policy}";
+    series2.strokeWidth = 2;
+    series2.minBulletDistance = 12;
 
     // Drop-shaped tooltips
     series.tooltip.background.cornerRadius = 20;
@@ -86,14 +80,14 @@ class State extends React.Component {
     series.tooltip.label.textAlign = "middle";
     series.tooltip.label.textValign = "middle";
 
-    // Make bullets grow on hover
-    var bullet = series.bullets.push(new am4charts.CircleBullet());
-    bullet.circle.strokeWidth = 2;
-    bullet.circle.radius = 4;
-    bullet.circle.fill = am4core.color("#fff");
+    series2.tooltip.background.cornerRadius = 20;
+    series2.tooltip.background.strokeOpacity = 0;
+    series2.tooltip.pointerOrientation = "vertical";
+    series2.tooltip.label.minWidth = 40;
+    series2.tooltip.label.minHeight = 40;
+    series2.tooltip.label.textAlign = "middle";
+    series2.tooltip.label.textValign = "middle";
 
-    var bullethover = bullet.states.create("hover");
-    bullethover.properties.scale = 1.3;
 
     // Make a panning cursor
     chart.cursor = new am4charts.XYCursor();
@@ -106,17 +100,25 @@ class State extends React.Component {
     chart.scrollbarY.parent = chart.leftAxesContainer;
     chart.scrollbarY.toBack();
 
-    // Create a horizontal scrollbar with previe and place it underneath the date axis
+    // bullets
+    let bullet = series.bullets.push(new am4charts.CircleBullet());
+    bullet.circle.strokeWidth = 2;
+    bullet.circle.radius = 4;
+    bullet.circle.fill = am4core.color("#fff");
+    let bullet2 = series2.bullets.push(new am4charts.CircleBullet());
+    bullet2.circle.strokeWidth = 2;
+    bullet2.circle.radius = 4;
+    bullet2.circle.fill = am4core.color("#fff");
+
+    // Create a horizontal scrollbar with preview and place it underneath the date axis
     chart.scrollbarX = new am4charts.XYChartScrollbar();
     chart.scrollbarX.series.push(series);
+    chart.scrollbarX.series.push(series2);
     chart.scrollbarX.parent = chart.bottomAxesContainer;
+    chart.scrollbarX.thumb.minWidth = 50;
 
-    dateAxis.start = 0.79;
+    dateAxis.start = 0.8;
     dateAxis.keepSelection = true;
-
-    return () => {
-      chart.dispose();
-    };
   }
 
   render() {

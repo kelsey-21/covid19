@@ -22,15 +22,9 @@ class Map extends React.Component {
     var id = e.target.dataItem.dataContext.id;
     var locationCode = id.split('-')[1];
 
-    // this.reroute(locationCode);
-    // this.reroute2(locationCode);
     this.reroute3(locationCode);
-
-    // browserHistory.push(`/location/${locationCode}`);
   };
 
-  reroute = locationCode => <Redirect to= { `/location/${locationCode}` } />;
-  reroute2 = locationCode => <NavLink to={ `/location/${locationCode}` } ></NavLink>;
   reroute3 = locationCode => this.props.history.push({ pathname: `/location/${locationCode}`, props: locationCode });;
 
 
