@@ -21,7 +21,7 @@ namespace covid.Controllers
             _locationRepo = locationRepo;
         }
 
-        [HttpGet("list")]
+        [HttpGet("list/{locationCode}")]
         public IActionResult GetLocationPoliciesByState(string locationCode)
         {
             var policies = _locationPolicyRepo.GetLocationPoliciesByState(locationCode);

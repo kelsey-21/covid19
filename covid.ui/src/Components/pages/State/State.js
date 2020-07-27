@@ -51,9 +51,10 @@ class State extends React.Component {
     // Create axes
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    // let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-    // categoryAxis.dataFields.category = "policy";
-    // categoryAxis.renderer.opposite = true;
+    let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis2.renderer.inversed = true;
+    valueAxis2.syncWithAxis = valueAxis;
+    valueAxis.syncWithAxis = valueAxis2;
 
     // Create series
     let series = chart.series.push(new am4charts.LineSeries());
@@ -63,12 +64,12 @@ class State extends React.Component {
     series.strokeWidth = 2;
     series.minBulletDistance = 12;
 
-    // let series2 = chart.series.push(new am4charts.LineSeries());
-    // series2.dataFields.valueY = "policy";
-    // series2.dataFields.dateX = "date";
-    // series2.tooltipText = "policy"
-    // series2.strokeWidth = 2;
-    // series2.minBulletDistance = 12;
+    let series2 = chart.series.push(new am4charts.LineSeries());
+    series2.dataFields.valueY = "policy";
+    series2.dataFields.dateX = "date";
+    series2.tooltipText = "{policy}";
+    series2.strokeWidth = 2;
+    series2.minBulletDistance = 12;
 
     // Drop-shaped tooltips
     series.tooltip.background.cornerRadius = 20;
@@ -78,6 +79,14 @@ class State extends React.Component {
     series.tooltip.label.minHeight = 40;
     series.tooltip.label.textAlign = "middle";
     series.tooltip.label.textValign = "middle";
+
+    series2.tooltip.background.cornerRadius = 20;
+    series2.tooltip.background.strokeOpacity = 0;
+    series2.tooltip.pointerOrientation = "vertical";
+    series2.tooltip.label.minWidth = 40;
+    series2.tooltip.label.minHeight = 40;
+    series2.tooltip.label.textAlign = "middle";
+    series2.tooltip.label.textValign = "middle";
 
 
     // Make a panning cursor
@@ -96,13 +105,15 @@ class State extends React.Component {
     bullet.circle.strokeWidth = 2;
     bullet.circle.radius = 4;
     bullet.circle.fill = am4core.color("#fff");
-
-    let bullethover = bullet.states.create("hover");
-    bullethover.properties.scale = 1.3;
+    let bullet2 = series2.bullets.push(new am4charts.CircleBullet());
+    bullet2.circle.strokeWidth = 2;
+    bullet2.circle.radius = 4;
+    bullet2.circle.fill = am4core.color("#fff");
 
     // Create a horizontal scrollbar with preview and place it underneath the date axis
     chart.scrollbarX = new am4charts.XYChartScrollbar();
     chart.scrollbarX.series.push(series);
+    chart.scrollbarX.series.push(series2);
     chart.scrollbarX.parent = chart.bottomAxesContainer;
     chart.scrollbarX.thumb.minWidth = 50;
 

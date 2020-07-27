@@ -88,7 +88,6 @@ namespace covid.Controllers
                     finalData.Policy = null;
                 }
                 historicalData.Add(finalData);
-
             }
 
             return Ok(historicalData);
@@ -148,9 +147,6 @@ namespace covid.Controllers
 
             return locationColor;
 
-            //if (response.IsSuccessful)
-            //    return Ok(locationColor);
-            //else return NotFound(response.ErrorMessage);
         }
 
         [HttpGet("map")]
