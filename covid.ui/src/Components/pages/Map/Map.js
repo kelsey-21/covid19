@@ -89,7 +89,7 @@ class Map extends React.Component {
 
   render() {
     return(
-      <div className="Map">
+      <div className="Map" id="Home">
         <h3>COVID19 and Policy Tracking</h3>
         <div id="chartdiv" style={{ width: "100%", height: "450px" }}></div>
       </div>
