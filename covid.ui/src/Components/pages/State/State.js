@@ -20,7 +20,6 @@ class State extends React.Component {
   }
 
   GetStateData = () => {
-    // console.log('option 1', this.props.match.params.locationCode);
     const { locationCode } = this.props.match.params;
     CovidData.getStateData(locationCode)
     .then(data => {
@@ -30,14 +29,6 @@ class State extends React.Component {
       }
     });
   };
-
-  // componentDidUpdate(prevState) {
-  //   if (this.state.statedata !== prevState.statedata) {
-  //     const { coviddata } = this.state;
-  //     // this.chart.data = coviddata.filter(x => x.positiveIncrease !== 0);
-  //     this.chart.data = [1,2,3];
-  //   }
-  // }
 
   CreateChart() {
     let chart = am4core.create("chartdiv", am4charts.XYChart);
@@ -119,6 +110,10 @@ class State extends React.Component {
 
     dateAxis.start = 0.8;
     dateAxis.keepSelection = true;
+
+    return () => {
+      chart.dispose();
+    };
   }
 
   render() {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect, NavLink } from 'react-router-dom';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4maps from "@amcharts/amcharts4/maps";
 import am4geodata_usaLow from "@amcharts/amcharts4-geodata/usaLow";
@@ -92,7 +91,7 @@ class Map extends React.Component {
     return(
       <div className="Map">
         <h3>COVID19 and Policy Tracking</h3>
-        <div id="chartdiv" style={{ width: "90%", height: "450px" }}></div>
+        <div id="chartdiv" style={{ width: "100%", height: "450px" }}></div>
       </div>
       )
     }
