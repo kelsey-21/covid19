@@ -115,23 +115,23 @@ namespace covid.Controllers
             if (percentChange >= 25)
             {
                 status = "greatly increasing";
-                fill = "#8B0000";
+                fill = "#8a2c2d";
             }
                 else if (percentChange < 25 && percentChange >= 5)
             {
                 status = "increasing";
-                fill = "#DC143C";
+                fill = "#BF671E"; //F1AB86 //
             }
                 else if (percentChange < 5 && percentChange >= 0)
             {
                 status = "flat";
-                fill = "#FFD700";
+                fill = "#D5A021";
 
             }
                 else
             {
                 status = "decreasing";
-                fill = "#008000";
+                fill = "#004f2d";
             }
 
             var locationColor = new LocationStatus

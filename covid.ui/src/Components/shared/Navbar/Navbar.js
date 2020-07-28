@@ -1,47 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Collapse, Nav, NavbarToggler, NavbarBrand, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom'
 
 import auth from '../../../helpers/auth';
 
 import './Navbar.scss';
 
-class Navbar extends React.Component {
-  logMeOut = (e) => {
+function NavbarComp() {
+  const logMeOut = (e) => {
     e.preventDefault();
     auth.logoutUser();
   };
 
-  render() {
-    const { authed } = this.props;
+    // const { authed } = this.props;
 
-    return(
-      <nav className="navbar navbar-expand-lg">
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item active">
-              <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#Key">Key</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#Sources">Sources</a>
-            </li>
-            <li className="nav-item">
-              {
+  return (
+    <div className="actual-nav">
+      <Nav pills className="d-flex justify-content-center">
+            <NavItem>
+              <NavLink href="/">HOME</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/#Key">KEY</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/#Sources">SOURCES</NavLink>
+            </NavItem>
+            <NavItem>
+            {/* {
                 authed ?
-                  <Link to="/" className="btn btn-outline" onClick={this.logMeOut}>Logout</Link>
+                  <Link to="/" className="btn btn-outline" onClick={logMeOut}>Logout</Link>
                   : <Link to="/login" className="btn btn-outline">Login</Link>
-              }
-            </li>
-          </ul>
-        </div>
-      </nav>
-    )
-  }
+              } */}
+            </NavItem>
+      </Nav>
+    </div>
+  );
 }
 
-export default Navbar
+export default NavbarComp

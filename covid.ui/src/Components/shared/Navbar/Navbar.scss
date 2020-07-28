@@ -1,0 +1,100 @@
+@import '../../../styles/variables';
+
+.actual-nav {
+  padding: 1%;
+  font-size: 0.8rem;
+  background-color: $navy;
+  color: white;
+  a, a:hover, a:visited {
+    color: white;
+  }
+}
+
+.covid-information {
+  background-color: $eggshell;
+  padding: 1rem;
+  .key-box {
+    width: 20%;
+    height: auto;
+    color: white;
+    display: inline-block;
+    text-align: center;
+    align-self: center;
+    padding: 2rem;
+    margin: 2%;
+  }
+  .crimson {
+    background-color: $crimson;
+  }
+  .forest {
+    background-color: $forest;
+  }
+  .goldenrod {
+    background-color: $goldenrod;
+  }
+  .orange {
+    background-color: $orange;
+  }
+}
+
+#Sources {
+  text-align: left;
+  width: 45%;
+  margin: auto;
+  p, li {
+    font-size: .8rem;
+    .text-crimson {
+      font-weight: bold;
+      color: $crimson;
+    }
+    .text-forest {
+      font-weight: bold;
+      color: $forest;
+    }
+    .text-goldenrod {
+      font-weight: bold;
+      color: $goldenrod;
+    }
+    .text-orange {
+      font-weight: bold;
+      color: $orange;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #Key {
+    display: flex;
+    flex-direction: column;
+    .key-box { width: 60%; }
+  }
+  #Sources {
+    width: 80%;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  #Key {
+    display: flex;
+    flex-direction: row;
+}
+}
+
+.footer-bottom {
+  background-color: $navy;
+  color: $eggshell;
+  .footer-terms {
+    font-size: 0.75rem;
+    margin: 1rem 1rem 0 1rem;
+    text-align: left;
+    display: inline-block;
+    align-self: flex-end;
+  }
+  .social-icon {
+    margin: 2rem;
+    font-size: 2rem;
+    a {
+      padding: 1rem;
+    }
+  }
+}
