@@ -43,7 +43,7 @@ class State extends React.Component {
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis2.renderer.inversed = true;
+    valueAxis2.renderer.opposite = true;
     valueAxis2.syncWithAxis = valueAxis;
     valueAxis.syncWithAxis = valueAxis2;
 
@@ -79,12 +79,8 @@ class State extends React.Component {
     series2.tooltip.label.textAlign = "middle";
     series2.tooltip.label.textValign = "middle";
 
-
     // Make a panning cursor
     chart.cursor = new am4charts.XYCursor();
-    chart.cursor.behavior = "panXY";
-    chart.cursor.xAxis = dateAxis;
-    chart.cursor.snapToSeries = series;
 
     // Create vertical scrollbar and place it before the value axis
     chart.scrollbarY = new am4core.Scrollbar();
