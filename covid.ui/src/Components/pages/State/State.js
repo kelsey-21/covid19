@@ -45,7 +45,6 @@ class State extends React.Component {
     let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis2.renderer.opposite = true;
     valueAxis2.syncWithAxis = valueAxis;
-    valueAxis.syncWithAxis = valueAxis2;
 
     // Create series
     let series = chart.series.push(new am4charts.LineSeries());
@@ -61,6 +60,7 @@ class State extends React.Component {
     series2.tooltipText = "{policy}";
     series2.strokeWidth = 2;
     series2.minBulletDistance = 12;
+    valueAxis2.sortBySeries = series2;
 
     // Drop-shaped tooltips
     series.tooltip.background.cornerRadius = 20;
