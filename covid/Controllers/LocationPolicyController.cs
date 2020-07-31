@@ -27,5 +27,12 @@ namespace covid.Controllers
             var policies = _locationPolicyRepo.GetLocationPoliciesByState(locationCode);
             return Ok(policies);
         }
+
+        [HttpGet("detail/{locationCode}")]
+        public IActionResult GetLocationPoliciesDetailByState(string locationCode)
+        {
+            var policies = _locationPolicyRepo.GetLocationPoliciesDetailByState(locationCode);
+            return Ok(policies);
+        }
     }
 }

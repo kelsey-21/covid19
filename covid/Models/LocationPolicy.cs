@@ -24,10 +24,13 @@ namespace covid.Models
         public string PolicyCode { get; set; }
     }
 
-    public class HistoricalData
+    public class LocationPolicyDetail
     {
-        public List<StateDataPositive> Covid { get; set; }
-        public List<LocationPolicyFormatted> Policy { get; set; }
+        public int LocationPolicyId { get; set; }
+        public string Date { get; set; }
+        public string PolicyStatus { get; set; }
+        public string PolicyName { get; set; }
+        public string PolicyNotes { get; set; }
     }
 
     public class DataModel

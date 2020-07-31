@@ -27,7 +27,7 @@ class Footer extends React.Component {
               <h6>14 Day Trend of COVID+</h6>
               <p>Using the last 14 days of COVID positive cases, this data is updated daily and comes from the COVID Tracking Project.</p>
               <ul>
-                <li><span className="text-crimson">Dark red</span>: If cases are increasing (>25% change) during the 14 day period</li>
+                <li><span className="text-crimson">Dark red</span>: If cases are increasing (&gt;25% change) during the 14 day period</li>
                 <li><span className="text-orange">Orange</span>: If cases are increasing (between 5% - 25% change) during the 14 day period</li>
                 <li><span className="text-goldenrod">Yellow</span>: If cases are flat (less than 5% change) during the 14 day period</li>
                 <li><span className="text-forest">Green</span>: If cases are decreasing (more than -5% change) during the 14 day period</li>

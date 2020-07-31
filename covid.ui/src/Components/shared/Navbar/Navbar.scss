@@ -10,6 +10,13 @@
   }
 }
 
+.title {
+  font-family: $titles;
+  font-weight: bolder;
+  font-size: 2.2rem;
+  margin: 6px;
+}
+
 .covid-information {
   background-color: $eggshell;
   padding: 1rem;
