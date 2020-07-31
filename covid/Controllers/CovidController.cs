@@ -18,27 +18,15 @@ namespace covid.Controllers
     public class CovidController : ControllerBase
     {
         RestClient _restClient;
-        LocationRepository _locationRepo;
         LocationPolicyRepository _locationPolicyRepository;
+        LocationRepository _locationRepo;
 
-        public CovidController(LocationRepository locationRepo, LocationPolicyRepository locationPolicyRepo)
+        public CovidController(LocationPolicyRepository locationPolicyRepo, LocationRepository locationRepo)
         {
             _restClient = new RestClient("https://covidtracking.com/api/");
-            _locationRepo = locationRepo;
             _locationPolicyRepository = locationPolicyRepo;
+            _locationRepo = locationRepo;
         }
-
-
-        //[HttpGet]
-        //public IActionResult TestRestSharp()
-        //{            
-        //    var restRequest = new RestRequest("v1/states/info.json", Method.GET);
-        //    var response = _restClient.Execute<List<TestData>>(restRequest);
-
-        //    if (response.IsSuccessful)
-        //        return Ok(response.Data);
-        //    else return NotFound(response.ErrorMessage);
-        //}
 
         [HttpGet("/all")]
         public IActionResult CurrentValuesAllStates()
@@ -93,19 +81,14 @@ namespace covid.Controllers
             return Ok(historicalData);
         }
   
-
-        //[HttpGet("status/{StateCode}")]
         public LocationStatus StatusByState(string StateCode, string StateName)
         {
             var sc = StateCode.ToLower();
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
             var response = _restClient.Execute<List<StateData>>(restRequest);
-
-            //var percentChangeStates = new List<LocationStatus>();
             
             var last14Records = response.Data.Take(14).ToList();
 
-            //foreach (var stateData in last14Records)
             var oldestRecord = last14Records[13];
             var newestRecord = last14Records[0];
             var percentChange = ((newestRecord.Positive - oldestRecord.Positive) * 100) / oldestRecord.Positive;
@@ -120,7 +103,7 @@ namespace covid.Controllers
                 else if (percentChange < 25 && percentChange >= 5)
             {
                 status = "increasing";
-                fill = "#BF671E"; //F1AB86 //
+                fill = "#BF671E"; 
             }
                 else if (percentChange < 5 && percentChange >= 0)
             {

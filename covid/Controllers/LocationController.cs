@@ -13,19 +13,11 @@ namespace covid.Controllers
     public class LocationController : ControllerBase
     {
 
-        LocationColorRepository _locationColorRepo;
         LocationRepository _locationRepo;
-        public LocationController(LocationColorRepository locationColorRepo, LocationRepository locationRepo)
+        public LocationController(LocationRepository locationRepo)
         {
-            _locationColorRepo = locationColorRepo;
             _locationRepo = locationRepo;
         }
 
-        [HttpGet("list")]
-        public IActionResult GetListOfLocations()
-        {
-            var locations = _locationRepo.GetListOfLocations();
-            return Ok(locations);
-        }
     }
 }
