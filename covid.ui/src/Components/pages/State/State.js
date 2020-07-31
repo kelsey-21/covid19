@@ -6,6 +6,8 @@ import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
 
 import CovidData from '../../../helpers/data/CovidData';
 
+import PolicyTable from '../../shared/PolicyTable/PolicyTable';
+
 am4core.useTheme(am4themes_dataviz);
 am4core.useTheme(am4themes_animated);
 
@@ -45,7 +47,6 @@ class State extends React.Component {
     let valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis2.renderer.opposite = true;
     valueAxis2.syncWithAxis = valueAxis;
-    valueAxis.syncWithAxis = valueAxis2;
 
     // Create series
     let series = chart.series.push(new am4charts.LineSeries());
@@ -61,6 +62,7 @@ class State extends React.Component {
     series2.tooltipText = "{policy}";
     series2.strokeWidth = 2;
     series2.minBulletDistance = 12;
+    valueAxis2.sortBySeries = series2;
 
     // Drop-shaped tooltips
     series.tooltip.background.cornerRadius = 20;
@@ -113,11 +115,12 @@ class State extends React.Component {
   }
 
   render() {
-
+    const { locationCode } = this.props.match.params;
     return (
       <div className="State">
-        <h3>COVID19 and Policy Tracking</h3>
+        <h3 className="title">{locationCode}: IMPACT OF POLICIES ON COVID-19</h3>
         <div id="chartdiv" style={{ width: "90%", height: "400px" }}></div>
+        <PolicyTable locationCode={locationCode}/>
       </div>
     );
   }

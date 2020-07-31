@@ -90,8 +90,8 @@ class Map extends React.Component {
   render() {
     return(
       <div className="Map" id="Home">
-        <h3>COVID19 and Policy Tracking</h3>
-        <div id="chartdiv" style={{ width: "100%", height: "450px" }}></div>
+        <h3 className="title">IMPACT OF POLICIES ON COVID-19</h3>
+        <div id="chartdiv" style={{ width: "75%", height: "400px", margin: "auto"}}></div>
       </div>
       )
     }
