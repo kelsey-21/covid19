@@ -33,7 +33,7 @@ class State extends React.Component {
   };
 
   CreateChart() {
-    let chart = am4core.create("chartdiv", am4charts.XYChart);
+    let chart = am4core.create("chartdiv2", am4charts.XYChart);
       if (this.state.coviddata) {
         chart.data = this.state.coviddata.filter(x => x.positiveIncrease !== 0).reverse();
       }
@@ -109,9 +109,11 @@ class State extends React.Component {
     dateAxis.start = 0.8;
     dateAxis.keepSelection = true;
 
-    return () => {
-      chart.dispose();
-    };
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    this.chart.dispose();
   }
 
   render() {
@@ -119,7 +121,7 @@ class State extends React.Component {
     return (
       <div className="State">
         <h3 className="title">{locationCode}: IMPACT OF POLICIES ON COVID-19</h3>
-        <div id="chartdiv" style={{ width: "90%", height: "400px" }}></div>
+        <div id="chartdiv2" style={{ width: "90%", height: "400px" }}></div>
         <PolicyTable locationCode={locationCode}/>
       </div>
     );

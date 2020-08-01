@@ -46,6 +46,7 @@ namespace covid
                 }
                 );
 
+            services.AddTransient<CovidRepository>();
             services.AddTransient<LocationRepository>();
             services.AddTransient<LocationPolicyRepository>();
             services.AddTransient<UserTypeRespository>();

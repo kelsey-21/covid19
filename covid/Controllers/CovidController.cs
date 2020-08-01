@@ -20,12 +20,14 @@ namespace covid.Controllers
         RestClient _restClient;
         LocationPolicyRepository _locationPolicyRepository;
         LocationRepository _locationRepo;
+        CovidRepository _covidRepository;
 
-        public CovidController(LocationPolicyRepository locationPolicyRepo, LocationRepository locationRepo)
+        public CovidController(LocationPolicyRepository locationPolicyRepo, LocationRepository locationRepo, CovidRepository covidRepo)
         {
             _restClient = new RestClient("https://covidtracking.com/api/");
             _locationPolicyRepository = locationPolicyRepo;
             _locationRepo = locationRepo;
+            _covidRepository = covidRepo;
         }
 
         [HttpGet("/all")]
@@ -71,7 +73,8 @@ namespace covid.Controllers
                 if (policyCode != null)
                 {
                     finalData.Policy = policyCode.PolicyCode;
-                } else
+                }
+                else
                 {
                     finalData.Policy = null;
                 }
@@ -80,74 +83,51 @@ namespace covid.Controllers
 
             return Ok(historicalData);
         }
-  
-        public LocationStatus StatusByState(string StateCode, string StateName)
+
+        [HttpGet("schedule")]
+        public void RunScheduler()
+        {
+            //MyScheduler.IntervalInHours(13, 30, 1,
+            //() => ScheduleMapData());
+
+            MyScheduler.IntervalInMinutes(13, 55, 55,
+                () => ScheduleMapData());
+        }
+
+
+        public void ScheduleMapData()
+        {
+            var locations = _locationRepo.GetListOfLocations();
+
+            var allMapData = new List<ScheduleLocationStatus>();
+
+            foreach (var location in locations)
+            {
+                var mapData = ScheduleStatusByState(location.LocationCode, location.LocationName);
+                allMapData.Add(mapData);
+            }
+
+            foreach (var mapItem in allMapData)
+            {
+                var newMapItem = _covidRepository.ScheduleAdd(mapItem);
+            }
+        }
+
+        public ScheduleLocationStatus ScheduleStatusByState(string StateCode, string StateName)
         {
             var sc = StateCode.ToLower();
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
             var response = _restClient.Execute<List<StateData>>(restRequest);
-            
-            var last14Records = response.Data.Take(14).ToList();
 
-            var oldestRecord = last14Records[13];
-            var newestRecord = last14Records[0];
-            var percentChange = ((newestRecord.Positive - oldestRecord.Positive) * 100) / oldestRecord.Positive;
-            string status;
-            string fill;
-
-            if (percentChange >= 25)
-            {
-                status = "greatly increasing";
-                fill = "#8a2c2d";
-            }
-                else if (percentChange < 25 && percentChange >= 5)
-            {
-                status = "increasing";
-                fill = "#BF671E"; 
-            }
-                else if (percentChange < 5 && percentChange >= 0)
-            {
-                status = "flat";
-                fill = "#D5A021";
-
-            }
-                else
-            {
-                status = "decreasing";
-                fill = "#004f2d";
-            }
-
-            var locationColor = new LocationStatus
-            {
-                Id = "US-" + StateCode,
-                Name = StateName,
-                Value = new Value {
-                    Status = status,
-                    PercentChange = percentChange,
-                },
-                Fill = fill,
-                };
-
+            var locationColor = _covidRepository.ScheduleStatusByState(StateCode, StateName, response.Data);
             return locationColor;
-
         }
 
-        [HttpGet("map")]
-        public IActionResult GetAllMapData()
+        [HttpGet("mapdata")]
+        public IActionResult GetMapData()
         {
-            var locations = _locationRepo.GetListOfLocations();
-
-            var allMapData = new List<LocationStatus>();
-
-            foreach (var location in locations)
-            {
-                var mapData = StatusByState(location.LocationCode, location.LocationName);
-                allMapData.Add(mapData);
-            }
-
-            if (allMapData.Count > 0)
-                return Ok(allMapData);
-            else return NotFound("Issue with map data");
+            var mapData = _covidRepository.GetMapData();
+            return Ok(mapData);
         }
     }
 }
