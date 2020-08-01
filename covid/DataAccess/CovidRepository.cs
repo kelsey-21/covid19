@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using covid.Models;
+using Dapper;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 
 namespace covid.DataAccess
 {
     public class CovidRepository
     {
+        string ConnectionString;
+        public CovidRepository(IConfiguration config)
+        {
+            ConnectionString = config.GetConnectionString("CovidTracking");
+        }
 
         public ScheduleLocationStatus ScheduleStatusByState(string StateCode, string StateName, List<StateData> response)
         {
@@ -56,14 +64,43 @@ namespace covid.DataAccess
 
         public ScheduleLocationStatus ScheduleAdd(ScheduleLocationStatus newMapItem)
         {
-            var sql = @"insert into Pickle(NumberInStock,Price,Size,Type)
+            var sql = @"insert into LocationColor
                         output inserted.*
-                        values(@NumberInStock,@Price,@Size,@Type)";
+                        values(@LocationId, @LocationName, @Color, @Status, @PercentChange, getdate())";
 
             using (var db = new SqlConnection(ConnectionString))
             {
                 var result = db.QueryFirstOrDefault<ScheduleLocationStatus>(sql, newMapItem);
                 return result;
+            }
+        }
+
+        public List<LocationStatus> GetMapData()
+        {
+            var sql = @"select top(52)* from LocationColor
+                        order by Date desc, LocationName";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var initialData = db.Query<ScheduleLocationStatus>(sql).ToList();
+                var mapData = new List<LocationStatus>();
+                
+                foreach (var state in initialData)
+                {
+                    var locationStatus = new LocationStatus
+                    {
+                        Id = "US-" + state.LocationId,
+                        Name = state.LocationName,
+                        Value = new Value
+                        {
+                            Status = state.Status,
+                            PercentChange = state.PercentChange,
+                        },
+                        Fill = state.Color,
+                    };
+                    mapData.Add(locationStatus);
+                }
+                return mapData;
             }
         }
     }

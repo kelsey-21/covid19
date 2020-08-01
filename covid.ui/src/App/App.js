@@ -17,6 +17,7 @@ import Register from '../components/pages/Register/Register';
 import AddPolicy from '../components/pages/AddPolicy/AddPolicy';
 
 import './App.scss';
+import CovidData from '../helpers/data/CovidData';
 
 const PrivateRoute = ({ component: Component, authed, ...rest }) => {
   const routeChecker = (props) => (authed === true ? <Component {...props} {...rest}/> : <Redirect to={{ pathname: '/', state: { from: props.location } }} />);
@@ -30,15 +31,10 @@ class App extends React.Component {
     authed: false,
   }
 
-  // componentDidMount() {
-  //   this.removeListener = firebase.auth().onAuthStateChanged((user) => {
-  //     if (user && this.state.authed === false) {
-  //       this.setState({ authed: true });
-  //     } else if (user) {
-  //       this.setState({ authed: false });
-  //     }
-  //   });
-  // };
+  componentDidMount() {
+    CovidData.scheduleDataUpdates()
+      .then().catch();
+  };
 
   render() {
     const { authed } = this.state;

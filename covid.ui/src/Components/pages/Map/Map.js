@@ -24,7 +24,7 @@ class Map extends React.Component {
     this.reroute3(locationCode);
   };
 
-  reroute3 = locationCode => this.props.history.push({ pathname: `/location/${locationCode}`, props: locationCode });;
+  reroute3 = locationCode => this.props.history.push({ pathname: `/location/${locationCode}`});;
 
 
   componentDidMount() {
@@ -62,10 +62,9 @@ class Map extends React.Component {
     this.hs = hs;
 
 
-    return () => {
-      map.dispose();
-    };
+
   }
+
 
   componentDidUpdate(prevState) {
     if (this.state.mapdata !== prevState.mapdata) {
@@ -86,6 +85,10 @@ class Map extends React.Component {
       }
     });
   };
+
+  // componentWillUnmount(){
+  //   this.map.dispose();
+  // }
 
   render() {
     return(

@@ -35,5 +35,6 @@ namespace covid.Models
         public string Status { get; set; }
         public int PercentChange { get; set; }
         public string Color { get; set; }
+        public string Date { get; set; }
     }
 }

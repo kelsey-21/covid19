@@ -8,7 +8,7 @@ const getAllCovidData = () => new Promise((resolve, reject) => {
 });
 
 const getMapData = () => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/api/covid/map`)
+  axios.get(`${baseUrl}/api/covid/mapdata`)
     .then((result) => resolve(result.data))
     .catch(error => reject(error))
 });
@@ -19,6 +19,12 @@ const getStateData = (locationCode) => new Promise((resolve, reject) => {
     .catch(error => reject(error))
 });
 
+const scheduleDataUpdates = () => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/api/covid/schedule`)
+  .then((result) => resolve(result.data))
+  .catch(error => reject(error))
+})
+
 export default {
-  getAllCovidData, getMapData, getStateData
+  getAllCovidData, getMapData, getStateData, scheduleDataUpdates
 };

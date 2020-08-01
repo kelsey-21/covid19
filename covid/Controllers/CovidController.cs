@@ -73,7 +73,8 @@ namespace covid.Controllers
                 if (policyCode != null)
                 {
                     finalData.Policy = policyCode.PolicyCode;
-                } else
+                }
+                else
                 {
                     finalData.Policy = null;
                 }
@@ -82,13 +83,13 @@ namespace covid.Controllers
 
             return Ok(historicalData);
         }
-  
+
         public LocationStatus StatusByState(string StateCode, string StateName)
         {
             var sc = StateCode.ToLower();
             var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
             var response = _restClient.Execute<List<StateData>>(restRequest);
-            
+
             var last14Records = response.Data.Take(14).ToList();
 
             var oldestRecord = last14Records[13];
@@ -102,18 +103,18 @@ namespace covid.Controllers
                 status = "greatly increasing";
                 fill = "#8a2c2d";
             }
-                else if (percentChange < 25 && percentChange >= 5)
+            else if (percentChange < 25 && percentChange >= 5)
             {
                 status = "increasing";
-                fill = "#BF671E"; 
+                fill = "#BF671E";
             }
-                else if (percentChange < 5 && percentChange >= 0)
+            else if (percentChange < 5 && percentChange >= 0)
             {
                 status = "flat";
                 fill = "#D5A021";
 
             }
-                else
+            else
             {
                 status = "decreasing";
                 fill = "#004f2d";
@@ -123,12 +124,13 @@ namespace covid.Controllers
             {
                 Id = "US-" + StateCode,
                 Name = StateName,
-                Value = new Value {
+                Value = new Value
+                {
                     Status = status,
                     PercentChange = percentChange,
                 },
                 Fill = fill,
-                };
+            };
             return locationColor;
         }
 
@@ -150,9 +152,19 @@ namespace covid.Controllers
             else return NotFound("Issue with map data");
         }
 
-
         [HttpGet("schedule")]
-        public IActionResult ScheduleMapData()
+        public void RunScheduler()
+        {
+            //MyScheduler.IntervalInHours(13, 30, 1,
+            //() => ScheduleMapData());
+
+            MyScheduler.IntervalInMinutes(13, 55, 55,
+                () => ScheduleMapData());
+        }
+
+
+        //[HttpGet("schedule")]
+        public void ScheduleMapData()
         {
             var locations = _locationRepo.GetListOfLocations();
 
@@ -166,13 +178,8 @@ namespace covid.Controllers
 
             foreach (var mapItem in allMapData)
             {
-                var newMapItem = _covidRepository.ScheduleItem(mapItem);
-                return Created("", newMapItem);
+                var newMapItem = _covidRepository.ScheduleAdd(mapItem);
             }
-
-            if (allMapData.Count > 0)
-                return Ok(allMapData);
-            else return NotFound("Issue with map data");
         }
 
         public ScheduleLocationStatus ScheduleStatusByState(string StateCode, string StateName)
@@ -184,4 +191,12 @@ namespace covid.Controllers
             var locationColor = _covidRepository.ScheduleStatusByState(StateCode, StateName, response.Data);
             return locationColor;
         }
+
+        [HttpGet("mapdata")]
+        public IActionResult GetMapData()
+        {
+            var mapData = _covidRepository.GetMapData();
+            return Ok(mapData);
+        }
+    }
 }

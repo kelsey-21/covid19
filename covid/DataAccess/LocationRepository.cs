@@ -20,7 +20,7 @@ namespace covid.DataAccess
 
         public List<LocationNameandCode> GetListOfLocations()
         {
-            var sql = "select LocationCode from Location";
+            var sql = "select LocationCode, LocationName from Location";
             using (var db = new SqlConnection(ConnectionString))
             {
                 var locations = db.Query<LocationNameandCode>(sql).ToList();

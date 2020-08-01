@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using covid.Controllers;
 
 namespace covid
 {
@@ -14,12 +15,6 @@ namespace covid
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-
-            MyScheduler.IntervalInHours(10, 46, 1,
-            () =>
-            {
-                Console.Log("//here write the code that you want to schedule");
-            });
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
