@@ -5,6 +5,7 @@ import am4geodata_usaLow from "@amcharts/amcharts4-geodata/usaLow";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 import CovidData from '../../../helpers/data/CovidData';
+import CovidInfo from '../../shared/CovidInfo/CovidInfo';
 
 am4core.useTheme(am4themes_animated);
 
@@ -49,7 +50,7 @@ class Map extends React.Component {
 
     // Create hover state and set alternative fill color
     let hs = polygonTemplate.states.create("hover");
-    hs.properties.fill = am4core.color("#4A4A4A");
+    // hs.properties.fill = am4core.color("#4A4A4A");
 
     // click event
     polygonTemplate.events.on("hit", this.clickEvents, this);
@@ -95,6 +96,7 @@ class Map extends React.Component {
       <div className="Map" id="Home">
         <h3 className="title">IMPACT OF POLICIES ON COVID-19</h3>
         <div id="chartdiv" style={{ width: "75%", height: "400px", margin: "auto"}}></div>
+        <CovidInfo />
       </div>
       )
     }
