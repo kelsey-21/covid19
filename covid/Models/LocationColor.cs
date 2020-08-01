@@ -27,4 +27,13 @@ namespace covid.Models
         public string Status { get; set; }
         public decimal PercentChange { get; set; }
     }
+
+    public class ScheduleLocationStatus
+    {
+        public string LocationId { get; set; }
+        public string LocationName { get; set; }
+        public string Status { get; set; }
+        public int PercentChange { get; set; }
+        public string Color { get; set; }
+    }
 }

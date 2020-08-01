@@ -20,12 +20,14 @@ namespace covid.Controllers
         RestClient _restClient;
         LocationPolicyRepository _locationPolicyRepository;
         LocationRepository _locationRepo;
+        CovidRepository _covidRepository;
 
-        public CovidController(LocationPolicyRepository locationPolicyRepo, LocationRepository locationRepo)
+        public CovidController(LocationPolicyRepository locationPolicyRepo, LocationRepository locationRepo, CovidRepository covidRepo)
         {
             _restClient = new RestClient("https://covidtracking.com/api/");
             _locationPolicyRepository = locationPolicyRepo;
             _locationRepo = locationRepo;
+            _covidRepository = covidRepo;
         }
 
         [HttpGet("/all")]
@@ -127,9 +129,7 @@ namespace covid.Controllers
                 },
                 Fill = fill,
                 };
-
             return locationColor;
-
         }
 
         [HttpGet("map")]
@@ -149,5 +149,39 @@ namespace covid.Controllers
                 return Ok(allMapData);
             else return NotFound("Issue with map data");
         }
-    }
+
+
+        [HttpGet("schedule")]
+        public IActionResult ScheduleMapData()
+        {
+            var locations = _locationRepo.GetListOfLocations();
+
+            var allMapData = new List<ScheduleLocationStatus>();
+
+            foreach (var location in locations)
+            {
+                var mapData = ScheduleStatusByState(location.LocationCode, location.LocationName);
+                allMapData.Add(mapData);
+            }
+
+            foreach (var mapItem in allMapData)
+            {
+                var newMapItem = _covidRepository.ScheduleItem(mapItem);
+                return Created("", newMapItem);
+            }
+
+            if (allMapData.Count > 0)
+                return Ok(allMapData);
+            else return NotFound("Issue with map data");
+        }
+
+        public ScheduleLocationStatus ScheduleStatusByState(string StateCode, string StateName)
+        {
+            var sc = StateCode.ToLower();
+            var restRequest = new RestRequest($"v1/states/{sc}/daily.json", Method.GET);
+            var response = _restClient.Execute<List<StateData>>(restRequest);
+
+            var locationColor = _covidRepository.ScheduleStatusByState(StateCode, StateName, response.Data);
+            return locationColor;
+        }
 }
